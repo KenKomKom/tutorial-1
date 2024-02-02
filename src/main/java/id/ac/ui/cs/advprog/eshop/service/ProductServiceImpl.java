@@ -28,4 +28,10 @@ public class ProductServiceImpl implements  ProductService{
 
         return allProduct;
     }
+
+    @Override
+    public boolean delete(String productId) {
+        System.out.println("service delete");
+        return productRepository.delete(productId);
+    }
 }
