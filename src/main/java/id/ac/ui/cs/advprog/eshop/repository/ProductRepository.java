@@ -8,7 +8,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
-
 @Repository
 public class ProductRepository {
     private List<Product> productData = new ArrayList<>();
@@ -33,5 +32,17 @@ public class ProductRepository {
 
     public Iterator<Product> findAll(){
         return productData.iterator();
+    }
+
+    public boolean delete(String productId){
+        Iterator<Product> iterator = productData.iterator();
+        boolean deleteSuccess = false;
+        while(iterator.hasNext()){
+            if(iterator.next().getProductId().equals(productId)){
+                iterator.remove();
+                deleteSuccess=true;
+            }
+        }
+        return deleteSuccess;
     }
 }
