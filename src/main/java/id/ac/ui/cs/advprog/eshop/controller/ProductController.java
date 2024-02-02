@@ -28,9 +28,30 @@ public class ProductController {
         return "redirect:list";
     }
 
+    @RequestMapping(value="/edit/{id}", method = RequestMethod.GET)
+    public String editProductPage(Model model, @PathVariable("id") String productId){
+        System.out.println("in edit requestmap"+productId);
+        Product product = new Product();
+        product.setProductId(productId);
+
+        model.addAttribute("product", product);
+        return "EditProduct";
+    }
+
+    @PostMapping(value="/edit/{id}")
+    public String EditProductPost(@ModelAttribute Product product, Model model, @PathVariable("id") String productId){
+        System.out.println("postmapping edit");
+        product.setProductId(productId); // Reasoning: After posted by form, id becomes null
+        service.edit(product);
+        return "redirect:../list";
+    }
+
     @GetMapping("/list")
     public String productListPage(Model model){
         List<Product> allProducts = service.findAll();
+        for(Product p : allProducts){
+            System.out.println(p.getProductId()+" "+p.getProductName()+" ");
+        }
         model.addAttribute("products", allProducts);
         return "productList";
     }
