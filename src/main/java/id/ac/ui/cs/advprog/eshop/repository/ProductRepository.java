@@ -18,29 +18,39 @@ public class ProductRepository {
         return product;
     }
 
-    public Product edit(Product product){
-        for (Product existingProduct :productData) {
-            if (existingProduct.getProductId().equals(product.getProductId())) {
-                existingProduct.setProductQuantity(product.getProductQuantity());
-                existingProduct.setProductName(product.getProductName());
-                return existingProduct;
-            }
+    public boolean edit(Product product){
+        int index = findIndex(product.getProductId());
+        Product existingProduct = productData.get(index);
+
+        if (index==-1) return false;
+        else{
+            existingProduct.setProductQuantity(product.getProductQuantity());
+            existingProduct.setProductName(product.getProductName());
+            return true;
         }
-        return null;
     }
+
+    public int findIndex(String productId){
+        int index=0;
+        for (Product productDatum : productData) {
+            if (productDatum.getProductId().equals(productId)) {
+                return index;
+            }
+            index += 1;
+        }
+        return -1;
+    }
+
 
     public Iterator<Product> findAll(){
         return productData.iterator();
     }
     public boolean delete(String productId){
-        Iterator<Product> iterator = productData.iterator();
-        boolean deleteSuccess = false;
-        while(iterator.hasNext()){
-            if(iterator.next().getProductId().equals(productId)){
-                iterator.remove();
-                deleteSuccess=true;
-            }
+        int index = findIndex(productId);
+        if (index==-1) return false;
+        else {
+            productData.remove(index);
+            return true;
         }
-        return deleteSuccess;
     }
 }
