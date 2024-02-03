@@ -20,10 +20,10 @@ public class ProductRepository {
 
     public boolean edit(Product product){
         int index = findIndex(product.getProductId());
-        Product existingProduct = productData.get(index);
 
         if (index==-1) return false;
         else{
+            Product existingProduct = productData.get(index);
             existingProduct.setProductQuantity(product.getProductQuantity());
             existingProduct.setProductName(product.getProductName());
             return true;
