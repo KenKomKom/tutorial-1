@@ -34,7 +34,6 @@ public class ProductController {
 
     @RequestMapping(value="/product/edit/{id}", method = RequestMethod.GET)
     public String editProductPage(Model model, @PathVariable("id") String productId){
-        System.out.println("in edit requestmap"+productId);
         Product product = new Product();
         product.setProductId(productId);
 
@@ -42,11 +41,11 @@ public class ProductController {
         return "EditProduct";
     }
 
-    @PostMapping(value="/product/edit/{id}")
+    @PutMapping(value="/product/edit/{id}")
     public String EditProductPost(@ModelAttribute Product product, Model model, @PathVariable("id") String productId){
         product.setProductId(productId); // Reasoning: After posted by form, id becomes null
         service.edit(product);
-        return "redirect:../product/list";
+        return "redirect:../list";
     }
 
     @GetMapping("/product/list")
@@ -59,7 +58,7 @@ public class ProductController {
         return "productList";
     }
 
-    @GetMapping("/product/delete/{idToBeDelete}")
+    @DeleteMapping("/product/delete/{idToBeDelete}")
     public String deleteProductPost(Model model, @PathVariable String idToBeDelete){
         service.delete(idToBeDelete);
         return "redirect:../list";
