@@ -19,7 +19,6 @@ public class ProductRepository {
     }
 
     public Product edit(Product product){
-        System.out.println("in edit "+product.getProductId());
         for (Product existingProduct :productData) {
             if (existingProduct.getProductId().equals(product.getProductId())) {
                 existingProduct.setProductQuantity(product.getProductQuantity());
@@ -33,7 +32,6 @@ public class ProductRepository {
     public Iterator<Product> findAll(){
         return productData.iterator();
     }
-
     public boolean delete(String productId){
         Iterator<Product> iterator = productData.iterator();
         boolean deleteSuccess = false;

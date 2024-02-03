@@ -40,7 +40,6 @@ public class ProductController {
 
     @PostMapping(value="/edit/{id}")
     public String EditProductPost(@ModelAttribute Product product, Model model, @PathVariable("id") String productId){
-        System.out.println("postmapping edit");
         product.setProductId(productId); // Reasoning: After posted by form, id becomes null
         service.edit(product);
         return "redirect:../list";
@@ -58,7 +57,6 @@ public class ProductController {
 
     @GetMapping("/delete/{idToBeDelete}")
     public String deleteProductPost(Model model, @PathVariable String idToBeDelete){
-        System.out.println("control delete");
         service.delete(idToBeDelete);
         return "redirect:../list";
     }
