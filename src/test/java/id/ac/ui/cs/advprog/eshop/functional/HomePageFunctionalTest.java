@@ -83,13 +83,9 @@ public class HomePageFunctionalTest {
         WebElement linkEdit = links.get(1);
         linkEdit.click();
 
-        for (int i=0; i< Integer.MAX_VALUE; i++){}
-
         driver.findElement(By.id("nameInput")).sendKeys("budiPekerti");
         driver.findElement(By.id("quantityInput")).sendKeys("84021");
         driver.findElement(By.className("btn")).click();
-
-        for (int i=0; i< Integer.MAX_VALUE; i++){}
 
         productInfo = driver.findElements(By.tagName("td"));
         productName = productInfo.get(0);
@@ -98,6 +94,29 @@ public class HomePageFunctionalTest {
         productQuantity = productInfo.get(1);
         assertNotEquals("1231", productQuantity.getText());
         assertEquals("84021", productQuantity.getText());
+    }
+
+    @Test
+    void createDelete_isCorrect(ChromeDriver driver) throws Exception{
+        driver.get(String.format(baseUrl+"/product/create"));
+        driver.findElement(By.id("nameInput")).sendKeys("lala");
+        driver.findElement(By.id("quantityInput")).sendKeys("1231");
+        driver.findElement(By.className("btn")).click();
+
+        String productList = driver.findElement(By.tagName("h2")).getText();
+        assertEquals("Product' List", productList);
+        List<WebElement> productInfo = driver.findElements(By.tagName("td"));
+        WebElement productName = productInfo.get(0);
+        assertEquals("lala", productName.getText());
+        WebElement productQuantity = productInfo.get(1);
+        assertEquals("1231", productQuantity.getText());
+
+        List<WebElement> links = driver.findElements(By.tagName("a"));
+        WebElement linkDelete = links.get(2);
+        linkDelete.click();
+
+        productInfo = driver.findElements(By.tagName("td"));
+        assertEquals(0,productInfo.size());
 
     }
 }
