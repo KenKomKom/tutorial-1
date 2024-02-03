@@ -1,9 +1,10 @@
 package id.ac.ui.cs.advprog.eshop.functional;
 
+import id.ac.ui.cs.advprog.eshop.repository.ProductRepository;
 import io.github.bonigarcia.seljup.SeleniumJupiter;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -32,6 +33,46 @@ public class HomePageFunctionalTest {
         baseUrl=String.format("%s:%d",testBaseUrl, serverPort);
     }
 
+    void deleteAll(ChromeDriver driver, int productsMade){
+        List<WebElement> productInfo = driver.findElements(By.tagName("td"));
+        for (int i=0; i<productsMade; i++){
+            List<WebElement> links = driver.findElements(By.tagName("a"));
+            WebElement linkDelete = links.get(2);
+            linkDelete.click();
+        }
+    }
+
+    void fillNameQuantity(ChromeDriver driver, String name, int quantity){
+        driver.findElement(By.id("nameInput")).sendKeys(name);
+        driver.findElement(By.id("quantityInput")).sendKeys(String.valueOf(quantity));
+        driver.findElement(By.className("btn")).click();
+    }
+
+    void createProduct(ChromeDriver driver, String name, int quantity){
+        driver.get(String.format(baseUrl+"/product/create"));
+        fillNameQuantity(driver, name, quantity);
+    }
+    boolean checkForFirstProductInList(ChromeDriver driver, String name, int quantity){
+        boolean success = true;
+
+        String productList = driver.findElement(By.tagName("h2")).getText();
+        success = success && productList.equals("Product' List");
+        System.out.println("cek product' list: "+success);
+
+        List<WebElement> productInfo = driver.findElements(By.tagName("td"));
+        WebElement productName = productInfo.get(0);
+        success = success && (name.equals(productName.getText()));
+        System.out.println(name+" "+productName.getText());
+        System.out.println("cek nama: "+success);
+
+        WebElement productQuantity = productInfo.get(1);
+        success = success && (String.valueOf(quantity).equals(productQuantity.getText()));
+        System.out.println(String.valueOf(quantity)+" "+productQuantity.getText());
+        System.out.println("cek kuantitas: "+success);
+
+        return success;
+    }
+
     @Test
     void pageTitle_isCorrect(ChromeDriver driver) throws Exception{
         driver.get(baseUrl);
@@ -50,73 +91,50 @@ public class HomePageFunctionalTest {
 
     @Test
     void createProduct_isCorrect(ChromeDriver driver) throws Exception{
-        driver.get(String.format(baseUrl+"/product/create"));
-        driver.findElement(By.id("nameInput")).sendKeys("lala");
-        driver.findElement(By.id("quantityInput")).sendKeys("1231");
-        driver.findElement(By.className("btn")).click();
+        String name = "lalal";
+        int quantity = 1230;
 
-        String productList = driver.findElement(By.tagName("h2")).getText();
-        assertEquals("Product' List", productList);
-        List<WebElement> productInfo = driver.findElements(By.tagName("td"));
-        WebElement productName = productInfo.get(0);
-        assertEquals("lala", productName.getText());
-        WebElement productQuantity = productInfo.get(1);
-        assertEquals("1231", productQuantity.getText());
+        createProduct(driver, name, quantity);
+        assertTrue(checkForFirstProductInList(driver, name, quantity));
+
+        deleteAll(driver,1);
     }
 
     @Test
     void createEditProduct_isCorrect(ChromeDriver driver) throws Exception{
-        driver.get(String.format(baseUrl+"/product/create"));
-        driver.findElement(By.id("nameInput")).sendKeys("lala");
-        driver.findElement(By.id("quantityInput")).sendKeys("1231");
-        driver.findElement(By.className("btn")).click();
+        String name = "lala";
+        int quantity = 1231;
 
-        String productList = driver.findElement(By.tagName("h2")).getText();
-        assertEquals("Product' List", productList);
-        List<WebElement> productInfo = driver.findElements(By.tagName("td"));
-        WebElement productName = productInfo.get(0);
-        assertEquals("lala", productName.getText());
-        WebElement productQuantity = productInfo.get(1);
-        assertEquals("1231", productQuantity.getText());
+        String name2 = "budiPekerti";
+        int quantity2= 84021;
+
+        createProduct(driver, name, quantity);
+        assertTrue(checkForFirstProductInList(driver, name, quantity));
 
         List<WebElement> links = driver.findElements(By.tagName("a"));
         WebElement linkEdit = links.get(1);
         linkEdit.click();
 
-        driver.findElement(By.id("nameInput")).sendKeys("budiPekerti");
-        driver.findElement(By.id("quantityInput")).sendKeys("84021");
-        driver.findElement(By.className("btn")).click();
+        fillNameQuantity(driver, name2, quantity2);
 
-        productInfo = driver.findElements(By.tagName("td"));
-        productName = productInfo.get(0);
-        assertNotEquals("lala", productName.getText());
-        assertEquals("budiPekerti", productName.getText());
-        productQuantity = productInfo.get(1);
-        assertNotEquals("1231", productQuantity.getText());
-        assertEquals("84021", productQuantity.getText());
+        assertTrue(checkForFirstProductInList(driver, name2, quantity2));
+
+        deleteAll(driver,1);
     }
 
     @Test
     void createDelete_isCorrect(ChromeDriver driver) throws Exception{
-        driver.get(String.format(baseUrl+"/product/create"));
-        driver.findElement(By.id("nameInput")).sendKeys("lala");
-        driver.findElement(By.id("quantityInput")).sendKeys("1231");
-        driver.findElement(By.className("btn")).click();
+        String name = "lala";
+        int quantity = 1231;
 
-        String productList = driver.findElement(By.tagName("h2")).getText();
-        assertEquals("Product' List", productList);
-        List<WebElement> productInfo = driver.findElements(By.tagName("td"));
-        WebElement productName = productInfo.get(0);
-        assertEquals("lala", productName.getText());
-        WebElement productQuantity = productInfo.get(1);
-        assertEquals("1231", productQuantity.getText());
+        createProduct(driver, name, quantity);
+        assertTrue(checkForFirstProductInList(driver, name, quantity));
 
         List<WebElement> links = driver.findElements(By.tagName("a"));
         WebElement linkDelete = links.get(2);
         linkDelete.click();
 
-        productInfo = driver.findElements(By.tagName("td"));
+        List<WebElement> productInfo = driver.findElements(By.tagName("td"));
         assertEquals(0,productInfo.size());
-
     }
 }
